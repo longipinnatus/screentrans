@@ -1,0 +1,49 @@
+# IDE
+.idea/
+*.iml
+.navigation/
+
+# Local machine configuration
+local.properties
+secrets.properties
+
+# Gradle and Kotlin build cache
+.gradle/
+.kotlin/
+.kotlin-scripts/
+
+# Build outputs
+build/
+release/
+*/build/
+*/release/
+captures/
+*.apk
+*.aab
+*.bundle
+
+# Android native build outputs
+.externalNativeBuild/
+.cxx/
+cmake-build-debug/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+*.hprof
+lint-results/
+lint-reports/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Signing files
+*.keystore
+*.jks
+
+# AI
+AGENTS.md
