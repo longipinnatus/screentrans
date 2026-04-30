@@ -34,7 +34,8 @@ class OcrPostProcessorTest {
         val raw = listOf(
             createBlock("竖", 400, 50, 450, 100, isVertical = true),
             createBlock("排", 400, 110, 450, 160, isVertical = true),
-            createBlock("文", 400, 170, 450, 220, isVertical = true)
+            createBlock("文", 400, 170, 450, 220, isVertical = true),
+            createBlock("字", 400, 230, 450, 280, isVertical = true),
         )
         runTest(raw, "ocr_vertical.svg")
     }

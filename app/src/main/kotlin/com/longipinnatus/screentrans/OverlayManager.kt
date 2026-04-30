@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.core.app.AppOpsManagerCompat
 
 object OverlayManager {
-    private const val TAG = "OverlayManager"
+    private val TAG = OverlayManager::class.java.simpleName
     private var currentOverlay: OverlayView? = null
 
     enum class DismissReason {

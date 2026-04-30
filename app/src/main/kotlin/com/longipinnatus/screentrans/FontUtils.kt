@@ -5,6 +5,7 @@ import android.os.Build
 import java.io.File
 
 object FontUtils {
+    private val TAG = FontUtils::class.java.simpleName
     data class FontInfo(val name: String, val path: String)
 
     fun getSystemFonts(): List<FontInfo> {
@@ -15,13 +16,14 @@ object FontUtils {
                 SystemFonts.getAvailableFonts().forEach { font ->
                     val file = font.file
                     if (file != null) {
-                        // Use filename as a simple name, or we could try to get the family name
-                        // but that requires more complex parsing.
                         fonts.add(FontInfo(file.name, file.absolutePath))
                     }
                 }
             } catch (e: Exception) {
-                LogManager.logSimple(LogType.ERROR, "FontUtils", "Failed to get system fonts: ${e.message}")
+                LogManager.logSimple(
+                    LogType.ERROR,
+                    TAG,
+                    "Failed to get system fonts: ${e.message}")
             }
         }
         

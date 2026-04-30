@@ -34,6 +34,7 @@ data class LogItem(
 )
 
 object LogManager {
+    private val TAG = LogManager::class.java.simpleName
     private val logs = mutableListOf<LogItem>()
     private var onLogUpdate: (() -> Unit)? = null
     private var logFile: File? = null
@@ -97,7 +98,7 @@ object LogManager {
                 }
                 onLogUpdate?.invoke()
             } catch (e: Exception) {
-                Log.e("LogManager", "Failed to load logs", e)
+                Log.e(TAG, "Failed to load logs", e)
             }
         }
     }
@@ -120,8 +121,7 @@ object LogManager {
         }
 
         val logContent = entries.joinToString("\n\n") { "${it.label}: ${it.value}" }
-        val logTag = "LogManager:$tag"
-        Log.println(type.priority, logTag, logContent)
+        Log.println(type.priority, "$TAG:$tag", logContent)
 
         onLogUpdate?.invoke()
         writeToDisk(item)
@@ -141,7 +141,7 @@ object LogManager {
                     writer.write(gson.toJson(item) + "\n")
                 }
             } catch (e: Exception) {
-                Log.e("LogManager", "Failed to write log to disk", e)
+                Log.e(TAG, "Failed to write log to disk", e)
             }
         }
     }

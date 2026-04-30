@@ -7,7 +7,7 @@ import java.nio.ByteBuffer
 import androidx.core.graphics.createBitmap
 
 object ScreenCaptureHelper {
-    private const val TAG = "ScreenCaptureHelper"
+    private val TAG = ScreenCaptureHelper::class.java.simpleName
 
     fun capture(imageReader: ImageReader?): Bitmap? {
         if (imageReader == null) {

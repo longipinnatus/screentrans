@@ -20,6 +20,7 @@ class PreferenceManager(private val context: Context) {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     private companion object {
+        val TAG: String = PreferenceManager::class.java.simpleName
         val OCR_ONLY = booleanPreferencesKey("ocr_only")
         val REGION_MODE = booleanPreferencesKey("region_mode")
         val SHOW_BOXES = booleanPreferencesKey("show_boxes")
@@ -135,7 +136,7 @@ class PreferenceManager(private val context: Context) {
             val type = object : TypeToken<List<AppSettings.FilterRule>>() {}.type
             gson.fromJson(json, type)
         } catch (e: Exception) {
-            Log.e("PreferenceManager", "Failed to parse filter rules", e)
+            Log.e(TAG, "Failed to parse filter rules", e)
             emptyList()
         }
     }
@@ -188,5 +189,4 @@ class PreferenceManager(private val context: Context) {
             prefs[FILTER_RULES] = gson.toJson(data.filterRules)
         }
     }
-
 }

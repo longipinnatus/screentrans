@@ -25,19 +25,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.longipinnatus.screentrans.ui.theme.ScreenTransAITheme
+import com.longipinnatus.screentrans.ui.theme.ScreenTransTheme
 
 class AboutActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ScreenTransAITheme {
+            ScreenTransTheme {
                 AboutScreen {
                     finish()
                 }
@@ -70,10 +71,10 @@ fun AboutScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("About") },
+                title = { Text(stringResource(R.string.about)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -109,7 +110,21 @@ fun AboutScreen(onBack: () -> Unit) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = stringResource(R.string.github_project),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    textDecoration = TextDecoration.Underline
+                ),
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable {
+                    val intent = Intent(Intent.ACTION_VIEW, "https://github.com/longipinnatus/ScreenTrans".toUri())
+                    context.startActivity(intent)
+                }
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
@@ -130,7 +145,7 @@ fun AboutScreen(onBack: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "This project is developed with the assistance of AI.",
+                text = "The software is provided \"as is\", without warranty of any kind. This project is AI-assisted.",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center
@@ -209,14 +224,6 @@ fun AboutScreen(onBack: () -> Unit) {
                         description = "Google's latest design system."
                     )
                 )
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Text(
-                text = "Made with ❤️ by Raphanus",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

@@ -357,6 +357,6 @@ class OverlayView @JvmOverloads constructor(
     }
 
     companion object {
-        private const val TAG = "OverlayView"
+        private val TAG = OverlayView::class.java.simpleName
     }
 }

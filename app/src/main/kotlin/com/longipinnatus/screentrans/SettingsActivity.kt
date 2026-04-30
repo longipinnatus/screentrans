@@ -72,7 +72,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.longipinnatus.screentrans.ui.theme.ScreenTransAITheme
+import com.longipinnatus.screentrans.ui.theme.ScreenTransTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -88,7 +88,7 @@ class SettingsActivity : AppCompatActivity() {
         preferenceManager = PreferenceManager(this)
 
         setContent {
-            ScreenTransAITheme {
+            ScreenTransTheme {
                 SettingsScreen(
                     onSave = { finish() },
                     onBack = { finish() }

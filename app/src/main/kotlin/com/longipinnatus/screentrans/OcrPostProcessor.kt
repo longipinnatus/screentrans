@@ -13,7 +13,7 @@ data class OcrResult(
 )
 
 object OcrPostProcessor {
-    private const val TAG = "OcrPostProcessor"
+    private val TAG = OcrPostProcessor::class.java.simpleName
     private val gson = GsonBuilder().create()
 
     // Thresholds for merging

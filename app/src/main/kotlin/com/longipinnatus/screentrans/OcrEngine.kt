@@ -62,7 +62,7 @@ data class TextBlock(
 }
 
 object OcrEngine {
-    private const val TAG = "OcrEngine"
+    private val TAG = OcrEngine::class.java.simpleName
     private var ortEnv: OrtEnvironment? = null
     private var detSession: OrtSession? = null
     private var recSession: OrtSession? = null

@@ -59,7 +59,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import com.longipinnatus.screentrans.ui.theme.ScreenTransAITheme
+import com.longipinnatus.screentrans.ui.theme.ScreenTransTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -71,7 +71,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class FloatingService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner {
 
     companion object {
-        private const val TAG = "FloatingService"
+        private val TAG = FloatingService::class.java.simpleName
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
         const val EXTRA_RESULT_CODE = "EXTRA_RESULT_CODE"
@@ -269,7 +269,7 @@ class FloatingService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedSta
 
         val composeView = ComposeView(this).apply {
             setContent {
-                ScreenTransAITheme {
+                ScreenTransTheme {
                     FloatingBall(
                         onDrag = { dx, dy ->
                             params.x += dx

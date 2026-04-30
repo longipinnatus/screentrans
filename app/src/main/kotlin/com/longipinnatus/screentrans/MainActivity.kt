@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.compose.ui.res.stringResource
-import com.longipinnatus.screentrans.ui.theme.ScreenTransAITheme
+import com.longipinnatus.screentrans.ui.theme.ScreenTransTheme
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,7 +68,11 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission(),
     ) { isGranted ->
         if (!isGranted) {
-            Toast.makeText(this, getString(R.string.notifications_disabled), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.notifications_disabled),
+                Toast.LENGTH_SHORT
+            ).show()
         }
         startFloatingService()
     }
@@ -99,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val isServiceRunning by FloatingService.isRunning.collectAsStateWithLifecycle()
-            ScreenTransAITheme {
+            ScreenTransTheme {
                 MainScreen(
                     isServiceRunning = isServiceRunning,
                     onToggleServiceClick = {
@@ -204,7 +208,7 @@ class MainActivity : AppCompatActivity() {
                     context.packageManager.getPackageInfo(context.packageName, 0).versionName
                 }
             } catch (e: Exception) {
-                LogManager.logSimple(LogType.ERROR, "MainActivity", "Failed to get version name: ${e.message}")
+                LogManager.logSimple(LogType.ERROR, TAG, "Failed to get version name: ${e.message}")
                 "1.0"
             }
         }
@@ -291,5 +295,9 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
     }
 }

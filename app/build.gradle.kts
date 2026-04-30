@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
@@ -19,7 +21,26 @@ android {
         proguardFiles()
     }
 
+    val localProperties = Properties().apply {
+        val propertiesFile = rootProject.file("local.properties")
+        if (propertiesFile.exists()) {
+            propertiesFile.inputStream().use { load(it) }
+        }
+    }
+
     signingConfigs {
+        getByName("debug") {
+            val keystorePath = localProperties.getProperty("debug.keystore.path")
+            if (keystorePath != null) {
+                val keystoreFile = file(keystorePath)
+                if (keystoreFile.exists()) {
+                    storeFile = keystoreFile
+                    storePassword = localProperties.getProperty("debug.keystore.password")
+                    keyAlias = localProperties.getProperty("debug.keystore.alias")
+                    keyPassword = localProperties.getProperty("debug.keystore.keyPassword")
+                }
+            }
+        }
         create("release") {
             val keystoreFile = file("release.keystore")
             if (keystoreFile.exists()) {

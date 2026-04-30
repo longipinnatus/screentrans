@@ -16,7 +16,7 @@ class ScreenTransApplication : Application() {
         // 1. Initialize LogManager and TokenStatsManager
         LogManager.init(this)
         TokenStatsManager.init(this)
-        LogManager.logSimple(LogType.INFO, "Application", "App started")
+        LogManager.logSimple(LogType.INFO, TAG, "App started")
 
         // 2. Apply saved language
         val preferenceManager = PreferenceManager(this)
@@ -34,13 +34,8 @@ class ScreenTransApplication : Application() {
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             try {
-                // Record the crash details
-                LogManager.logException("CRASH", throwable, "Uncaught exception in thread ${thread.name}")
-                Log.e("ScreenTransAI", "FATAL EXCEPTION in thread ${thread.name}", throwable)
-                
-                // Allow some time for LogManager to write to disk (it uses a single thread executor)
-                // In a real crash, the process might be dying, but we've pushed it to the executor.
-                // Thread.sleep(500) 
+                LogManager.logException(TAG, throwable, "FATAL EXCEPTION in thread ${thread.name}")
+                Log.e(TAG, "FATAL EXCEPTION in thread ${thread.name}", throwable)
             } catch (_: Exception) {
                 // Fallback if logging fails
             } finally {
@@ -52,5 +47,9 @@ class ScreenTransApplication : Application() {
                 }
             }
         }
+    }
+
+    companion object {
+        private val TAG = ScreenTransApplication::class.java.simpleName
     }
 }

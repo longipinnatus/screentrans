@@ -22,7 +22,7 @@ class ProjectionProxyActivity : ComponentActivity() {
     private val screenCaptureLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        LogManager.log(LogType.DEBUG, "ProjectionProxy", listOf(
+        LogManager.log(LogType.DEBUG, TAG, listOf(
             LogEntry("Result", "Launcher callback received"),
             LogEntry("ResultCode", result.resultCode.toString()),
             LogEntry("HasData", (result.data != null).toString())
@@ -47,7 +47,7 @@ class ProjectionProxyActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogManager.logSimple(LogType.DEBUG, "ProjectionProxy", "onCreate")
+        LogManager.logSimple(LogType.DEBUG, TAG, "onCreate")
 
         // Allow showing over lockscreen to handle "recover from screen off" better
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -60,13 +60,13 @@ class ProjectionProxyActivity : ComponentActivity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                LogManager.logSimple(LogType.DEBUG, "ProjectionProxy", "Fetching settings...")
+                LogManager.logSimple(LogType.DEBUG, TAG, "Fetching settings...")
                 // Get settings to check if we should use entire screen config (Android 14+)
                 val settings = withContext(Dispatchers.IO) {
                     preferenceManager.settingsData.first() ?: AppSettings.SettingsData()
                 }
                 
-                LogManager.logSimple(LogType.DEBUG, "ProjectionProxy", "Preparing capture intent (entireScreen=${settings.entireScreen})")
+                LogManager.logSimple(LogType.DEBUG, TAG, "Preparing capture intent (entireScreen=${settings.entireScreen})")
                 val captureIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && settings.entireScreen) {
                     val config = MediaProjectionConfig.createConfigForDefaultDisplay()
                     mediaProjectionManager.createScreenCaptureIntent(config)
@@ -74,12 +74,16 @@ class ProjectionProxyActivity : ComponentActivity() {
                     mediaProjectionManager.createScreenCaptureIntent()
                 }
                 
-                LogManager.logSimple(LogType.DEBUG, "ProjectionProxy", "Launching screenCaptureLauncher")
+                LogManager.logSimple(LogType.DEBUG, TAG, "Launching screenCaptureLauncher")
                 screenCaptureLauncher.launch(captureIntent)
             } catch (e: Exception) {
-                LogManager.logException("ProjectionProxy", e, "Failed to launch screen capture intent")
+                LogManager.logException(TAG, e, "Failed to launch screen capture intent")
                 finish()
             }
         }
+    }
+
+    companion object {
+        private val TAG = ProjectionProxyActivity::class.java.simpleName
     }
 }

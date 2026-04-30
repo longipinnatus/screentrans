@@ -113,7 +113,7 @@ class RegionSelectionView @JvmOverloads constructor(
                 // Log the selection area
                 LogManager.logSimple(
                     LogType.INFO, 
-                    "RegionSelectionView",
+                    TAG,
                     "Region selected: ${rectF.width().toInt()}x${rectF.height().toInt()} at (${rectF.left.toInt()}, ${rectF.top.toInt()})"
                 )
 
@@ -147,7 +147,7 @@ class RegionSelectionView @JvmOverloads constructor(
         try {
             wm?.removeView(this)
         } catch (e: Exception) {
-            Log.e("RegionSelectionView", "Failed to remove view from window", e)
+            Log.e(TAG, "Failed to remove view from window", e)
         }
     }
 
@@ -168,5 +168,9 @@ class RegionSelectionView @JvmOverloads constructor(
         }
         params.gravity = Gravity.TOP or Gravity.START
         wm.addView(this, params)
+    }
+
+    companion object {
+        private val TAG = RegionSelectionView::class.java.simpleName
     }
 }

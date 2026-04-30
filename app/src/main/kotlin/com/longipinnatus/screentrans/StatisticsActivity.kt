@@ -16,10 +16,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.longipinnatus.screentrans.ui.theme.ScreenTransAITheme
+import com.longipinnatus.screentrans.ui.theme.ScreenTransTheme
 import kotlinx.coroutines.launch
 
 class StatisticsActivity : ComponentActivity() {
@@ -27,7 +28,7 @@ class StatisticsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ScreenTransAITheme {
+            ScreenTransTheme {
                 StatisticsScreen { finish() }
             }
         }
@@ -66,15 +67,15 @@ fun StatisticsScreen(onBack: () -> Unit) {
         topBar = {
             Column {
                 TopAppBar(
-                    title = { Text("Usage Statistics") },
+                    title = { Text(stringResource(R.string.usage_statistics)) },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                         }
                     },
                     actions = {
                         IconButton(onClick = { TokenStatsManager.clearAll() }) {
-                            Icon(Icons.Default.Refresh, contentDescription = "Reset All")
+                            Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.reset_stats))
                         }
                     }
                 )
@@ -88,10 +89,10 @@ fun StatisticsScreen(onBack: () -> Unit) {
                             text = {
                                 Text(
                                     text = when (range) {
-                                        TokenStatsManager.StatsRange.SESSION -> "Session"
-                                        TokenStatsManager.StatsRange.TODAY -> "Today"
-                                        TokenStatsManager.StatsRange.THIS_MONTH -> "Month"
-                                        TokenStatsManager.StatsRange.ALL_TIME -> "All Time"
+                                        TokenStatsManager.StatsRange.SESSION -> stringResource(R.string.stats_range_session)
+                                        TokenStatsManager.StatsRange.TODAY -> stringResource(R.string.stats_range_today)
+                                        TokenStatsManager.StatsRange.THIS_MONTH -> stringResource(R.string.stats_range_month)
+                                        TokenStatsManager.StatsRange.ALL_TIME -> stringResource(R.string.stats_range_all)
                                     }
                                 )
                             }
@@ -137,30 +138,30 @@ fun StatsContent(stats: TokenStats, settings: AppSettings.SettingsData?) {
     ) {
         if (cost > 0) {
             StatCard(
-                title = "Estimated Cost",
+                title = stringResource(R.string.estimated_cost),
                 value = String.format(java.util.Locale.US, "%s %.4f", settings?.currencySymbol ?: "¥", cost),
                 color = androidx.compose.ui.graphics.Color(0xFF4CAF50) // Green
             )
         }
 
         StatCard(
-            title = "Total Tokens",
+            title = stringResource(R.string.total_tokens),
             value = stats.totalTokens.toString(),
             color = MaterialTheme.colorScheme.primary
         )
 
         StatCard(
-            title = "Prompt Tokens",
+            title = stringResource(R.string.prompt_tokens),
             value = stats.promptTokens.toString(),
             color = MaterialTheme.colorScheme.tertiary,
             subItems = listOf(
-                "Cache Hit" to stats.cacheHitTokens.toString(),
-                "Cache Miss" to stats.cacheMissTokens.toString()
+                stringResource(R.string.cache_hit) to stats.cacheHitTokens.toString(),
+                stringResource(R.string.cache_miss) to stats.cacheMissTokens.toString()
             )
         )
 
         StatCard(
-            title = "Completion Tokens",
+            title = stringResource(R.string.completion_tokens),
             value = stats.completionTokens.toString(),
             color = MaterialTheme.colorScheme.secondary
         )

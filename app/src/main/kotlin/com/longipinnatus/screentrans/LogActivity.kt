@@ -49,13 +49,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.longipinnatus.screentrans.ui.theme.DebugPurple
 import com.longipinnatus.screentrans.ui.theme.ErrorRed
 import com.longipinnatus.screentrans.ui.theme.InfoBlue
-import com.longipinnatus.screentrans.ui.theme.ScreenTransAITheme
+import com.longipinnatus.screentrans.ui.theme.ScreenTransTheme
 import com.longipinnatus.screentrans.ui.theme.SuccessGreen
 import com.longipinnatus.screentrans.ui.theme.VerboseGrey
 import com.longipinnatus.screentrans.ui.theme.WarningOrange
@@ -67,7 +69,7 @@ class LogActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            ScreenTransAITheme {
+            ScreenTransTheme {
                 LogScreen { finish() }
             }
         }
@@ -77,6 +79,7 @@ class LogActivity : ComponentActivity() {
     @Composable
     fun LogScreen(onBack: () -> Unit) {
         val context = LocalContext.current
+        val resources = LocalResources.current
         var logs by remember { mutableStateOf(LogManager.getLogs()) }
 
         val exportLauncher = rememberLauncherForActivityResult(
@@ -87,10 +90,14 @@ class LogActivity : ComponentActivity() {
                     context.contentResolver.openOutputStream(it)?.use { outputStream ->
                         outputStream.write(LogManager.exportLogsToString().toByteArray())
                     }
-                    Toast.makeText(context, "Logs exported successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.logs_exported, Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Log.e("LogActivity", "Failed to export logs", e)
-                    Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
+                    Log.e(TAG, "Failed to export logs", e)
+                    Toast.makeText(
+                        context,
+                        resources.getString(R.string.export_failed, e.message ?: ""),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -107,10 +114,10 @@ class LogActivity : ComponentActivity() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Logs") },
+                    title = { Text(stringResource(R.string.logs)) },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                         }
                     },
                     actions = {
@@ -121,10 +128,10 @@ class LogActivity : ComponentActivity() {
                             },
                             enabled = logs.isNotEmpty()
                         ) {
-                            Icon(Icons.Default.SaveAlt, contentDescription = "Export Logs")
+                            Icon(Icons.Default.SaveAlt, contentDescription = stringResource(R.string.export_logs))
                         }
                         IconButton(onClick = { LogManager.clear() }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Clear Logs")
+                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.clear_logs))
                         }
                     }
                 )
@@ -137,7 +144,7 @@ class LogActivity : ComponentActivity() {
                         .padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("No logs yet", color = MaterialTheme.colorScheme.outline)
+                    Text(stringResource(R.string.no_logs), color = MaterialTheme.colorScheme.outline)
                 }
             } else {
                 LazyColumn(
@@ -221,6 +228,7 @@ class LogActivity : ComponentActivity() {
     @Composable
     fun LogDataBox(label: String, text: String) {
         val context = LocalContext.current
+        val resources = LocalResources.current
         Column {
             Text(
                 text = label,
@@ -241,7 +249,7 @@ class LogActivity : ComponentActivity() {
                                 val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                                 val clip = ClipData.newPlainText("log_data", text)
                                 clipboard.setPrimaryClip(clip)
-                                Toast.makeText(context, "Copied $label to clipboard", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, resources.getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
                             }
                         )
                     }
@@ -255,5 +263,9 @@ class LogActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    companion object {
+        private val TAG = LogActivity::class.java.simpleName
     }
 }
