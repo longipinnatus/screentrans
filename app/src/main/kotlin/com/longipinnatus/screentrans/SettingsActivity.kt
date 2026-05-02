@@ -27,6 +27,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -45,6 +46,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -596,9 +598,43 @@ class SettingsActivity : AppCompatActivity() {
 
     @Composable
     fun RowSwitch(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text(label)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge
+            )
             Switch(checked = checked, onCheckedChange = onCheckedChange)
+        }
+    }
+
+    @Composable
+    fun RowAction(label: String, value: String, onClick: () -> Unit) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(label, style = MaterialTheme.typography.bodyLarge)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = value,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            }
         }
     }
 
@@ -740,24 +776,11 @@ class SettingsActivity : AppCompatActivity() {
         ) {
             Text(stringResource(R.string.app_settings_title), style = MaterialTheme.typography.titleMedium)
 
-            // Language Selection (Dialog Style)
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.app_language), style = MaterialTheme.typography.labelLarge)
-                Spacer(Modifier.height(4.dp))
-                OutlinedButton(
-                    onClick = { showAppLanguagePicker.value = true },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(currentLangLabel, overflow = TextOverflow.Ellipsis, maxLines = 1)
-                        Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
-                    }
-                }
-            }
+            RowAction(
+                label = stringResource(R.string.app_language),
+                value = currentLangLabel,
+                onClick = { showAppLanguagePicker.value = true }
+            )
 
             if (showAppLanguagePicker.value) {
                 AppLanguageSelectionDialog(
@@ -824,7 +847,79 @@ class SettingsActivity : AppCompatActivity() {
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(stringResource(R.string.ocr_model), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.ocr_settings), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.text_orientation), style = MaterialTheme.typography.labelLarge)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                val options = listOf(
+                    AppSettings.TEXT_ORIENTATION_AUTO to R.string.orient_auto,
+                    AppSettings.TEXT_ORIENTATION_HORIZONTAL to R.string.orient_horiz,
+                    AppSettings.TEXT_ORIENTATION_VERTICAL to R.string.orient_vert
+                )
+                options.forEach { (type, labelRes) ->
+                    val selected = currentSettings.textOrientation == type
+                    val contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
+                    if (selected) {
+                        Button(onClick = { onUpdate(currentSettings.copy(textOrientation = type)) }, modifier = Modifier.weight(1f), contentPadding = contentPadding) {
+                            Text(text = stringResource(labelRes), style = MaterialTheme.typography.labelSmall, maxLines = 1, softWrap = false)
+                        }
+                    } else {
+                        OutlinedButton(onClick = { onUpdate(currentSettings.copy(textOrientation = type)) }, modifier = Modifier.weight(1f), contentPadding = contentPadding) {
+                            Text(text = stringResource(labelRes), style = MaterialTheme.typography.labelSmall, maxLines = 1, softWrap = false)
+                        }
+                    }
+                }
+            }
+            RowSwitch(stringResource(R.string.merge_boxes), currentSettings.mergeTextBoxes) { onUpdate(currentSettings.copy(mergeTextBoxes = it)) }
+            HorizontalDivider()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(stringResource(R.string.ocr_filter_rules), style = MaterialTheme.typography.titleMedium)
+                IconButton(onClick = { onEditRule(AppSettings.FilterRule()) }) {
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_rule))
+                }
+            }
+
+            currentSettings.filterRules.forEach { rule ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = if (rule.enabled) 1f else 0.5f))
+                ) {
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = rule.enabled, onCheckedChange = { checked ->
+                                onUpdate(currentSettings.copy(filterRules = currentSettings.filterRules.map { if (it.id == rule.id) it.copy(enabled = checked) else it }))
+                            })
+                            Column(modifier = Modifier.weight(1f)) {
+                                val conditions = mutableListOf<String>()
+                                if (rule.minWidth > 0 && rule.minHeight > 0) conditions.add(stringResource(R.string.condition_size, rule.minWidth, rule.minHeight))
+                                else if (rule.minWidth > 0) conditions.add(stringResource(R.string.condition_width, rule.minWidth))
+                                else if (rule.minHeight > 0) conditions.add(stringResource(R.string.condition_height, rule.minHeight))
+                                if (rule.regex.isNotEmpty()) conditions.add(stringResource(R.string.condition_regex, rule.regex))
+                                
+                                Text(text = if (conditions.isEmpty()) stringResource(R.string.no_conditions) else conditions.joinToString(" AND "), style = MaterialTheme.typography.bodyMedium)
+                                Text(text = "${stringResource(R.string.apply_to)} ${listOfNotNull(if (rule.applyToRaw) stringResource(R.string.box_raw) else null, if (rule.applyToMerged) stringResource(R.string.box_merged) else null).joinToString(", ")}", style = MaterialTheme.typography.bodySmall)
+                            }
+                            IconButton(onClick = { onEditRule(rule) }) {
+                                Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit_rule))
+                            }
+                            IconButton(onClick = {
+                                onUpdate(currentSettings.copy(filterRules = currentSettings.filterRules.filter { it.id != rule.id }))
+                            }) {
+                                Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete_rule))
+                            }
+                        }
+                    }
+                }
+            }
+
+            HorizontalDivider()
+            Text(stringResource(R.string.ocr_advanced), style = MaterialTheme.typography.titleMedium)
             Text(stringResource(R.string.det_model), style = MaterialTheme.typography.labelLarge)
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 val options = listOf(
@@ -899,78 +994,6 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
-            HorizontalDivider()
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(stringResource(R.string.ocr_filter_rules), style = MaterialTheme.typography.titleMedium)
-                IconButton(onClick = { onEditRule(AppSettings.FilterRule()) }) {
-                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_rule))
-                }
-            }
-
-            currentSettings.filterRules.forEach { rule ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = if (rule.enabled) 1f else 0.5f))
-                ) {
-                    Column(modifier = Modifier.padding(8.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Checkbox(checked = rule.enabled, onCheckedChange = { checked ->
-                                onUpdate(currentSettings.copy(filterRules = currentSettings.filterRules.map { if (it.id == rule.id) it.copy(enabled = checked) else it }))
-                            })
-                            Column(modifier = Modifier.weight(1f)) {
-                                val conditions = mutableListOf<String>()
-                                if (rule.minWidth > 0 && rule.minHeight > 0) conditions.add("Size < ${rule.minWidth}px * ${rule.minHeight}px")
-                                else if (rule.minWidth > 0) conditions.add("Width < ${rule.minWidth}px")
-                                else if (rule.minHeight > 0) conditions.add("Height < ${rule.minHeight}px")
-                                if (rule.regex.isNotEmpty()) conditions.add("Regex: ${rule.regex}")
-                                
-                                Text(text = if (conditions.isEmpty()) stringResource(R.string.no_conditions) else conditions.joinToString(" AND "), style = MaterialTheme.typography.bodyMedium)
-                                Text(text = "${stringResource(R.string.apply_to)} ${listOfNotNull(if (rule.applyToRaw) stringResource(R.string.box_raw) else null, if (rule.applyToMerged) stringResource(R.string.box_merged) else null).joinToString(", ")}", style = MaterialTheme.typography.bodySmall)
-                            }
-                            IconButton(onClick = { onEditRule(rule) }) {
-                                Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit_rule))
-                            }
-                            IconButton(onClick = {
-                                onUpdate(currentSettings.copy(filterRules = currentSettings.filterRules.filter { it.id != rule.id }))
-                            }) {
-                                Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete_rule))
-                            }
-                        }
-                    }
-                }
-            }
-
-            HorizontalDivider()
-            Text(stringResource(R.string.ocr_advanced), style = MaterialTheme.typography.titleMedium)
-            RowSwitch(stringResource(R.string.merge_boxes), currentSettings.mergeTextBoxes) { onUpdate(currentSettings.copy(mergeTextBoxes = it)) }
-            Text(stringResource(R.string.text_orientation), style = MaterialTheme.typography.labelLarge)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                val options = listOf(
-                    AppSettings.TEXT_ORIENTATION_AUTO to R.string.orient_auto,
-                    AppSettings.TEXT_ORIENTATION_HORIZONTAL to R.string.orient_horiz,
-                    AppSettings.TEXT_ORIENTATION_VERTICAL to R.string.orient_vert
-                )
-                options.forEach { (type, labelRes) ->
-                    val selected = currentSettings.textOrientation == type
-                    val contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp)
-                    if (selected) {
-                        Button(onClick = { onUpdate(currentSettings.copy(textOrientation = type)) }, modifier = Modifier.weight(1f), contentPadding = contentPadding) {
-                            Text(text = stringResource(labelRes), style = MaterialTheme.typography.labelSmall, maxLines = 1, softWrap = false)
-                        }
-                    } else {
-                        OutlinedButton(onClick = { onUpdate(currentSettings.copy(textOrientation = type)) }, modifier = Modifier.weight(1f), contentPadding = contentPadding) {
-                            Text(text = stringResource(labelRes), style = MaterialTheme.typography.labelSmall, maxLines = 1, softWrap = false)
-                        }
-                    }
-                }
-            }
             RowSlider(stringResource(R.string.pixel_thresh), currentSettings.pixelThresh, 0.0f..1.0f) { onUpdate(currentSettings.copy(pixelThresh = it)) }
             RowSlider(stringResource(R.string.box_thresh), currentSettings.boxThresh, 0.0f..1.0f) { onUpdate(currentSettings.copy(boxThresh = it)) }
             RowSlider(stringResource(R.string.unclip_ratio), currentSettings.unclipRatio, 1.0f..3.0f) { onUpdate(currentSettings.copy(unclipRatio = it)) }
@@ -1145,14 +1168,14 @@ class SettingsActivity : AppCompatActivity() {
                 }
 
                 if (currentSettings.autoHideMode == AppSettings.AUTO_HIDE_MODE_FIXED) {
-                    TextField(
+                    OutlinedTextField(
                         value = currentSettings.displayDurationSec.toString(),
                         onValueChange = { onUpdate(currentSettings.copy(displayDurationSec = it.toLongOrNull() ?: 0L)) },
                         label = { Text(stringResource(R.string.display_duration)) },
                         modifier = Modifier.fillMaxWidth()
                     )
                 } else {
-                    TextField(
+                    OutlinedTextField(
                         value = currentSettings.durationPerWordMs.toString(),
                         onValueChange = { onUpdate(currentSettings.copy(durationPerWordMs = it.toLongOrNull() ?: 0L)) },
                         label = { Text(stringResource(R.string.duration_per_word)) },
@@ -1180,9 +1203,19 @@ class SettingsActivity : AppCompatActivity() {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(stringResource(R.string.translation_settings), style = MaterialTheme.typography.titleMedium)
-            
-            TextField(value = currentSettings.baseUrl, onValueChange = { onUpdate(currentSettings.copy(baseUrl = it)) }, label = { Text(stringResource(R.string.base_url)) }, modifier = Modifier.fillMaxWidth())
-            TextField(value = currentSettings.apiKey, onValueChange = { onUpdate(currentSettings.copy(apiKey = it)) }, label = { Text(stringResource(R.string.api_key)) }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(
+                value = currentSettings.baseUrl,
+                onValueChange = { onUpdate(currentSettings.copy(baseUrl = it)) },
+                label = { Text(stringResource(R.string.base_url)) },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            OutlinedTextField(
+                value = currentSettings.apiKey,
+                onValueChange = { onUpdate(currentSettings.copy(apiKey = it)) },
+                label = { Text(stringResource(R.string.api_key)) },
+                modifier = Modifier.fillMaxWidth(),
+            )
             
             // Model Selector
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -1222,13 +1255,13 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
-            TextField(value = currentSettings.systemPrompt, onValueChange = { onUpdate(currentSettings.copy(systemPrompt = it)) }, label = { Text(stringResource(R.string.system_prompt)) }, modifier = Modifier.fillMaxWidth(), minLines = 3)
-            TextField(value = currentSettings.backgroundInfo, onValueChange = { onUpdate(currentSettings.copy(backgroundInfo = it)) }, label = { Text(stringResource(R.string.background_info)) }, modifier = Modifier.fillMaxWidth(), minLines = 2)
+            OutlinedTextField(value = currentSettings.systemPrompt, onValueChange = { onUpdate(currentSettings.copy(systemPrompt = it)) }, label = { Text(stringResource(R.string.system_prompt)) }, modifier = Modifier.fillMaxWidth(), minLines = 3)
+            OutlinedTextField(value = currentSettings.backgroundInfo, onValueChange = { onUpdate(currentSettings.copy(backgroundInfo = it)) }, label = { Text(stringResource(R.string.background_info)) }, modifier = Modifier.fillMaxWidth(), minLines = 2)
 
             RowSwitch(stringResource(R.string.enable_streaming), currentSettings.enableStreaming) { onUpdate(currentSettings.copy(enableStreaming = it)) }
             RowSwitch(stringResource(R.string.force_json), currentSettings.forceJsonResponse) { onUpdate(currentSettings.copy(forceJsonResponse = it)) }
 
-            TextField(
+            OutlinedTextField(
                 value = currentSettings.extraParams,
                 onValueChange = { onUpdate(currentSettings.copy(extraParams = it)) },
                 label = { Text(stringResource(R.string.custom_params)) }, 
@@ -1269,7 +1302,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             
             if (isCustom) {
-                TextField(
+                OutlinedTextField(
                     value = currentSettings.currencySymbol,
                     onValueChange = { onUpdate(currentSettings.copy(currencySymbol = it)) },
                     label = { Text(stringResource(R.string.currency_symbol)) },
@@ -1318,7 +1351,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        TextField(
+        OutlinedTextField(
             value = textValue,
             onValueChange = { newValue ->
                 // Allow numbers, one decimal point, and empty string

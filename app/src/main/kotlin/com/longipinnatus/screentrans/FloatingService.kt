@@ -382,7 +382,7 @@ class FloatingService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedSta
                         // For Target SDK 35+, we must opt in specifically as creator and then as sender
                         
                         // 1. Options for Creator: ONLY set CreatorBackgroundActivityStartMode
-                        val creatorOptions = ActivityOptions.makeBasic()
+                        val creatorOptions = ActivityOptions.makeCustomAnimation(this@FloatingService, 0, 0)
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                             @Suppress("DEPRECATION")
                             creatorOptions.pendingIntentCreatorBackgroundActivityStartMode =

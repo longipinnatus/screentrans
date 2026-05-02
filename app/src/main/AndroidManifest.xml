@@ -49,7 +49,7 @@
         <activity
             android:name=".ProjectionProxyActivity"
             android:exported="false"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:theme="@style/Theme.Transparent"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
@@ -59,6 +59,17 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaProjection" />
+
+        <service
+            android:name=".QuickSettingsService"
+            android:exported="true"
+            android:label="@string/tile_label"
+            android:icon="@drawable/ic_translate_24"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
 
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"

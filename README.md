@@ -1,88 +1,88 @@
 # ScreenTrans
 
-[简体中文](README.zh_CN.md) | [English](README.md)
+[简体中文](README.md) | [English](README.en_US.md)
 
 [![Android Build](https://github.com/longipinnatus/screentrans/actions/workflows/android-build.yml/badge.svg)](https://github.com/longipinnatus/screentrans/actions/workflows/android-build.yml)
 
-**This project is in its early stages. Some features, error handling, documentation, and usage instructions are not yet complete.**
+一款支持自定义大模型 API 接口的开源 Android 屏幕 OCR 实时翻译工具。
 
-**During the development of this project, AI-assisted programming techniques were used. Although every effort has been made to ensure the correctness and stability of the code, there is no guarantee that it is entirely free of errors or defects. In the event that any bugs in this project lead to abnormal calls to the API, misuse, data breaches, service interruptions, or any other direct or indirect losses or consequences, I (and the project contributors) shall not be held liable. You, as the user of this project and its associated APIs, should assess the risks on your own and bear all potential consequences arising from such use.**
-
-An open-source Android OCR Screen Translator with customizable LLM API integration.
-
-## Download
-
-You can download the latest version from [GitHub Releases](https://github.com/longipinnatus/screentrans/releases/latest).
-
-For most Android devices, downloading `app-arm64-v8a-release.apk` is sufficient.
+> [!IMPORTANT]  
+> **该项目尚处于早期阶段。部分功能、错误处理、文档以及使用说明仍未完善。**
+> 
+> **本项目在开发过程中使用了 AI 辅助编程技术。尽管已尽力确保代码的正确性与稳定性，但无法保证完全没有错误或缺陷。如因本项目存在的任何 Bug 导致 API 被异常调用、滥用、数据泄露、服务中断或其他任何直接或间接的损失或后果，本人（及项目贡献者）不承担任何责任。您在使用本项目及相关 API 时，应自行评估风险，并承担由此可能带来的一切后果。**
 
 
-## Project Features
+## 下载
 
-### 1. Fast and Lightweight OCR Recognition
+可以在 [GitHub Releases](https://github.com/longipinnatus/screentrans/releases/latest) 下载最新版本。
+
+一般 Android 设备下载 `app-arm64-v8a-release.apk` 就可以了。
+
+
+## 项目特点
+
+### 1. 快速轻便的 OCR 识别能力
 ---
-* **Multi-model Support**: Built-in lightweight OCR models (supporting Simplified/Traditional Chinese, English, and Japanese), with the ability to load custom ONNX models for higher precision or specific language adaptation.
-* **Model Parameter Tuning**: Provides a parameter adjustment panel to optimize recognition parameters for source files with varying clarity, improving recognition rates in specific scenarios.
-* **Vertical Text Adaptation**: Supports vertical text recognition for Chinese and Japanese, catering to reading scenarios such as manga, novels, and classical texts.
-* **Horizontal/Vertical Scene Adaptation**: Supports seamless switching between landscape and portrait modes on devices.
+* **多模型支持**：内置轻量化 OCR 模型（支持简/繁中、英、日），并支持加载自定义 ONNX 模型，以满足高精度识别或特定语言适配需求。
+* **模型参数微调**：提供参数调节面板，支持针对不同清晰度的源文件优化识别参数，提升特定场景下的识别率。
+* **竖排文本适配**：支持中日文竖排文本识别，契合漫画、小说及古籍的阅读场景。
+* **横竖场景适配**：支持设备横屏与竖屏模式的无缝切换。
 
-### 2. Flexible LLM Integration
+### 2. 自由的 LLM 大模型集成
 ---
-* **Standard API Access**: Supports the OpenAI API protocol and compatible custom endpoints.
-* **Streaming Output**: Enables scrolling return of translated content, eliminating the need to wait for full responses when processing multiple text boxes, thus reducing wait time.
-* **Customizable Translation Style**: Supports user-defined prompts, allowing adjustments to translation style and terminology based on the context.
-* **Transparent Usage Metrics**: Built-in token usage statistics and cost calculation, providing real-time visibility into API consumption costs.
+* **标准 API 接入**：支持 OpenAI API 协议接口，兼容自定义 Endpoint。
+* **流式输出**：支持翻译内容滚动返回，在处理多个文本框时无需等待整体响应，减少等待时间。
+* **自定义翻译风格**：支持用户自定义 Prompt，可根据场景调整翻译风格以及术语。
+* **用量透明化**：内置 Token 使用统计与计费功能，实时掌握 API 消耗成本。
 
-### 3. Automated Workflows
+### 3. 自动化流程
 ---
-* **Customizable Exclusion Logic**: Supports automatic ignoring of irrelevant areas based on text box size and regular expressions, effectively filtering out page numbers, watermarks, etc.
-* **Clipboard Synchronization**: Recognized results can be automatically copied, with flexible configuration of copied content (original text only, translation only, or side-by-side comparison).
+* **自定义排除逻辑**：支持基于文本框尺寸及正则表达式自动忽略无关区域，有效过滤页码、水印等。
+* **剪贴板同步**：识别结果支持自动复制，可自由配置复制内容（仅原文、仅译文、或原译文对照）。
 
-### 4. Personalization
+### 4. 个性化定制
 ---
-* **Font Flexibility**: Supports custom display fonts, compatible with external TTF/OTF font file imports.
-* **UI Transparency Adjustment**: Transparency of both text boxes and the floating button can be set independently.
-* **Dynamic Interaction Logic**: Supports automatic hiding of translated results after a countdown, or switching to manual dismissal mode to maintain a clean interface.
-* **Color Adaptation**: Supports background color overlay, allowing translated text boxes to automatically blend with the original background, providing a near-native visual experience.
+* **字体自由度**：支持自定义显示字体，兼容外部 TTF/OTF 字体文件导入。
+* **UI 透明度调节**：文本框与悬浮球透明度均可独立设置。
+* **动态交互逻辑**：支持翻译结果倒计时自动隐藏，亦可切换为手动关闭模式，保持界面整洁。
+* **颜色自适应**：支持背景颜色覆盖，使翻译文本框颜色与原背景自动融合，提供接近原生的视觉效果。
 
 
-## How to Use
+## 如何使用
 
-The DeepSeek API parameters are already set by default. You just need to enter your API Key in the settings to start translating.
+默认已经设置好 DeepSeek API 的参数，只需要在设置里输入 API Key 就可以翻译了。
 
-Region selection mode (default):
+区域选择模式（默认设置）：
 
-* Click the floating button to select an area for translation;
+* 单击悬浮球是框选翻译；
 
-* Double-click to enable a more convenient vertical range selection.
+* 双击可以进行更方便的垂直范围框选。
 
-Full-screen translation mode: Click to recognize and translate the entire screen (I rarely use this feature, so the results may not be optimal).
+全屏翻译模式：单击识别全屏文字翻译（这项功能我用的少，效果不一定好）。
 
 
-## Screenshots
+## 界面展示
 
-Game: IDOLY PRIDE (アイプラ), filtering of certain texts has been enabled.
+游戏：偶像荣耀（アイプラ，IDOLY PRIDE），已设置过滤部分文字。
 
-| Main Activity | Region Select | Translated 1 | Translated 2 |
+| 主界面 | 区域选择 | 翻译示例 1 | 翻译示例 2 |
 | :---: | :---: | :---: | :---: |
 | <img src="images/demo_main_activity.jpg" width="200"> | <img src="images/demo_region_select.jpg" width="200"> | <img src="images/demo_region_select_translated_1.jpg" width="200"> | <img src="images/demo_region_select_translated_2.jpg" width="200"> |
 
-## Permission Requirements
 
-Required Permissions:
+## 权限要求
 
-* Floating Window Permission: Necessary for covering the original text. (If unable to open, you may need to click "Remove All Permission Restrictions")
+必须开启的权限：
 
-* Screen Recording Permission: Used to capture screenshots for OCR recognition.
+* 悬浮窗权限：覆盖原文翻译所必需（如果无法打开，可能需要点击“解除所有权限限制”）
+* 屏幕录制权限：用于截取屏幕图片进行 OCR 识别
 
-Recommended Permissions:
+推荐开启的权限：
 
-* Notification Permission: Enables stable background Toast notifications once granted.
+* 通知权限：开启后可以稳定地通过后台 Toast 通知；
+* 写入剪贴版权限：在一些定制系统里，需要设置为“始终允许”；
+* 后台弹出界面权限：由于熄屏后系统会自动收回录屏权限，启用后可以方便地重新请求录屏权限；
 
-* Clipboard Write Permission: On some customized ROMs, needs to be set to "Always allow".
-
-* Background Pop-up Permission: Since the system automatically revokes screen recording permission when the screen is off, enabling this allows you to conveniently re-request screen recording permission.
-
-| Permission Settings | Special Permission Settings |
+| 权限设置 | 其他特殊权限 |
 | :---: | :---: |
 | <img src="images/permission_config.jpg" width="300"> | <img src="images/permission_special.jpg" width="300"> |

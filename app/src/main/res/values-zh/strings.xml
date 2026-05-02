@@ -5,7 +5,7 @@
     <string name="app">应用</string>
     <string name="app_settings_title">应用设置</string>
     <string name="ocr">OCR</string>
-    <string name="overlay">悬浮窗</string>
+    <string name="overlay">叠加层</string>
     <string name="llm">翻译</string>
     <string name="app_language">应用语言</string>
     <string name="language_system_default">系统默认</string>
@@ -21,6 +21,7 @@
     <string name="loading">正在加载设置…</string>
     <string name="start_service">启动翻译服务</string>
     <string name="stop_service">停止翻译服务</string>
+    <string name="tile_label">屏幕翻译</string>
     <string name="token_stats">Token 统计</string>
     <string name="view_logs">查看日志</string>
     <string name="about">关于</string>
@@ -35,14 +36,14 @@
 
     <string name="ocr_only">仅 OCR</string>
     <string name="region_mode">区域选择模式</string>
-    <string name="entire_screen">捕获整个屏幕</string>
+    <string name="entire_screen">请求捕获整个屏幕</string>
     <string name="auto_copy">自动复制到剪贴板</string>
     <string name="copy_content">复制内容</string>
     <string name="copy_original">原文</string>
     <string name="copy_translation">译文</string>
     <string name="copy_both">两者</string>
 
-    <string name="ocr_model">OCR 模型</string>
+    <string name="ocr_settings">OCR 设置</string>
     <string name="det_model">文本检测模型</string>
     <string name="rec_model">文本识别模型</string>
     <string name="model_mobile">轻量级</string>

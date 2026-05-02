@@ -21,6 +21,7 @@
     <string name="loading">Loading settings…</string>
     <string name="start_service">Start Translation Service</string>
     <string name="stop_service">Stop Translation Service</string>
+    <string name="tile_label">Screen Translation</string>
     <string name="token_stats">Token Statistics</string>
     <string name="view_logs">View Logs</string>
     <string name="about">About</string>
@@ -34,14 +35,14 @@
     <string name="settings_saved">Settings saved</string>
     <string name="ocr_only">OCR Only</string>
     <string name="region_mode">Region Selection Mode</string>
-    <string name="entire_screen">Capture Entire Screen</string>
+    <string name="entire_screen">Request Capture Entire Screen</string>
     <string name="auto_copy">Auto Copy to Clipboard</string>
     <string name="copy_content">Copy Content</string>
     <string name="copy_original">Original</string>
     <string name="copy_translation">Translation</string>
     <string name="copy_both">Both</string>
 
-    <string name="ocr_model">OCR Model</string>
+    <string name="ocr_settings">OCR Settings</string>
     <string name="det_model">Detection Model</string>
     <string name="rec_model">Recognition Model</string>
     <string name="model_mobile">Mobile</string>
